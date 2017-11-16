@@ -1,0 +1,15 @@
+/bin/
+/target/
+
+.settings
+.classpath
+.project
+.springBeans
+.log
+**/logs
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.ipr
+*.iml
