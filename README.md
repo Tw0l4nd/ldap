@@ -10,8 +10,10 @@ These instructions will get you a copy of the project up and running on your loc
 
 * AD server
 * account for **auth-app** in AD with read/write access
-* certificates for LDAPS both on host (in `keystore` of JVM) and server: `192.168.151.10 ad-grsu.grsu.local` 
+* certificates for LDAPS both on host (in `keystore` of JVM) and server: `192.168.56.56 ad-grsu.grsu.local` 
 * you should have `ad-grsu.grsu.local` record in your `hosts` file
+
+Run as admin to install certificates into JRE:
 * `.\keytool.exe -trustcacerts -keystore "C:\Program Files\Java\jre1.8.0_144\lib\security\cacerts" -storepass changeit -importcert -alias grsu-11 -file ad-grsu.cer`
 * `.\keytool.exe -trustcacerts -keystore "C:\Program Files\Java\jre1.8.0_144\lib\security\cacerts" -storepass changeit -importcert -alias grsu-12 -file CONT-CA01.cer`
 * `.\keytool.exe -trustcacerts -keystore "C:\Program Files\Java\jre1.8.0_144\lib\security\cacerts" -storepass changeit -importcert -alias grsu-13 -file grsu-local.cer`
