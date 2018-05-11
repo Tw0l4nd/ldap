@@ -13,17 +13,16 @@ public class Main {
     private PersonRepoImpl personRepoImpl;
 
     public static void main(String[] args) {
-        UserService userService = new UserService();
         ApplicationContext ctx = new ClassPathXmlApplicationContext("Beans.xml");
         Main main = ctx.getBean(Main.class);
         main.callService();
-
-        System.out.println(userService.search("jack.sparrow@grsu.local"));
     }
 
     public void callService() {
         List<String> arr = personRepoImpl.getPersonNamesByLastName();
         arr.forEach(System.out::println);
+        personRepoImpl.setAttributeValueByUsername("Admin", "description", "addAdminPass");
+        System.out.println(personRepoImpl.getAttributePersonByUsername("Admin", "description"));
     }
 
     public void setPersonRepoImpl(PersonRepoImpl personRepoImpl) {
