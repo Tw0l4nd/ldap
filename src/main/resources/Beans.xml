@@ -20,8 +20,17 @@
         <property name="ldapTemplate" ref="ldapTemplate"/>
     </bean>
 
+    <bean id="userService" class="service.UserService">
+      <property name="ldapTemplate" ref="ldapTemplate"/>
+    </bean>
+
     <bean id="main" class="Main">
         <property name="personRepoImpl" ref="personRepo"/>
+        <property name="userService" ref="userService"/>
     </bean>
+
+  <bean id="userController" class="controllers.UserController">
+    <property name="userService" ref="userService"/>
+  </bean>
 
 </beans>

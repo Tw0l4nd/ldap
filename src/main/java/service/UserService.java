@@ -2,56 +2,81 @@ package service;
 
 import entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ldap.support.LdapUtils;
-import repository.UserRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.ldap.core.AttributesMapper;
+import org.springframework.ldap.core.DirContextOperations;
+import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.ldap.core.support.LdapContextSource;
+import org.springframework.ldap.query.LdapQuery;
+import org.springframework.security.ldap.userdetails.LdapUserDetailsManager;
+import org.springframework.stereotype.Component;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
-import java.util.Collections;
+import javax.naming.NamingException;
+import javax.naming.directory.Attributes;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static org.springframework.ldap.query.LdapQueryBuilder.query;
+
+@Component
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
 
-    public Boolean authenticate(final String username, final String password) {
-        User user = userRepository.findByUsernameAndPassword(username, password);
-        return user != null;
-    }
+  @Autowired(required = true)
+  @Qualifier(value = "ldapTemplate")
+  private LdapTemplate ldapTemplate;
 
-    public List<String> search(final String username) {
-        List<User> userList = userRepository.findByUsernameLikeIgnoreCase(username);
-        if (userList == null) {
-            return Collections.emptyList();
+  public void setLdapTemplate(LdapTemplate ldapTemplate) {
+    this.ldapTemplate = ldapTemplate;
+  }
+
+  // https://docs.spring.io/spring-ldap/docs/2.3.2.RELEASE/reference/#basic-queries
+  public List<String> getPersonNamesByLastName() {
+    LdapQuery query = query()
+      .base("cn=Users,dc=grsu,dc=local")
+      .where("objectclass").is("person")
+      .and("cn").is("jack.sparrow");
+
+    return ldapTemplate.search(query,
+      new AttributesMapper<String>() {
+        public String mapFromAttributes(Attributes attrs)
+          throws NamingException {
+
+          return (String) attrs.get("cn").get();
         }
+      });
+  }
 
-        return userList.stream().map(User::getUsername).collect(Collectors.toList());
+  public boolean setAttributeValueByUsername(String username, String attribute, String valueAttribute) {
+    try{
+      StringBuilder sb = new StringBuilder();
+      sb.append("cn=").append(username).append(",cn=Users,dc=grsu,dc=local");
+      DirContextOperations context = ldapTemplate.lookupContext(sb.toString());
+      context.setAttributeValue("cn", username);
+      context.setAttributeValue(attribute, valueAttribute);
+      ldapTemplate.modifyAttributes(context);
+      return true;
+    }catch (Exception ex){
+      return false;
     }
 
-    public void create(final String username, final String password) {
-        User newUser = new User(username, digestSHA(password));
-        newUser.setId(LdapUtils.emptyLdapName());
-        userRepository.save(newUser);
+  }
 
-    }
+  public String getAttributePersonByUsername(String username, String attribute) {
+    StringBuilder attributeUser = new StringBuilder();
+    StringBuilder sb = new StringBuilder();
+    sb.append("cn=").append(username).append(",cn=Users,dc=grsu,dc=local");
+    DirContextOperations context = ldapTemplate.lookupContext(sb.toString());
+    attributeUser.append(context.getStringAttribute(attribute));
+    return attributeUser.toString();
+  }
 
-    public void modify(final String username, final String password) {
-        User user = userRepository.findByUsername(username);
-        user.setPassword(password);
-        userRepository.save(user);
-    }
-
-    private String digestSHA(final String password) {
-        String base64;
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA");
-            digest.update(password.getBytes());
-            base64 = Base64.getEncoder().encodeToString(digest.digest());
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-        return "{SHA}" + base64;
-    }
+  public void tmpMethod(String username){
+    StringBuilder sb = new StringBuilder();
+    sb.append("cn=").append(username).append(",cn=Users,dc=grsu,dc=local");
+    LdapContextSource contextSource = new LdapContextSource();
+    //contextSource.setPassword("1");
+    contextSource.setUserDn(sb.toString());
+    LdapUserDetailsManager ldapUserDetailsManager = new LdapUserDetailsManager(contextSource);
+    //LdapUserDetailsManager ldapUserDetailsManager1 = new LdapUserDetailsManager(ldapTemplate.getContextSource());
+    ldapUserDetailsManager.changePassword("1","123");
+  }
 }
