@@ -18,17 +18,17 @@ public class UserController {
   private UserService userService;
 
   @RequestMapping(value = "/getInfo/{username}/{atrribute}")
-  public ResponseEntity<String> getAttributeInfo(@PathVariable(value = "username") String username, @PathVariable(value = "atrribute") String attribute){
-    return new ResponseEntity<>(userService.getAttributePersonByUsername(username, attribute), HttpStatus.CREATED );
+  public ResponseEntity<String> getAttributeInfo(@PathVariable(value = "username") String username, @PathVariable(value = "atrribute") String attribute) {
+    return new ResponseEntity<>(userService.getAttributePersonByUsername(username, attribute), HttpStatus.OK);
   }
 
   @RequestMapping(value = "/setAttributeValue/{username}/{atrribute}/{value}")
-  public ResponseEntity<String> getBusById(@PathVariable(value = "username") String username,
-                                              @PathVariable(value = "atrribute") String attribute,
-                                                  @PathVariable(value = "value") String value){
+  public ResponseEntity<?> setAttributeValue(@PathVariable(value = "username") String username,
+                                             @PathVariable(value = "atrribute") String attribute,
+                                             @PathVariable(value = "value") String value) {
     if (userService.setAttributeValueByUsername(username, attribute, value))
-      return new ResponseEntity<>("true", HttpStatus.CREATED );
-    else return new ResponseEntity<>("false", HttpStatus.CREATED );
+      return new ResponseEntity<>(HttpStatus.OK);
+    else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
   }
 
   public void setUserService(UserService userService) {

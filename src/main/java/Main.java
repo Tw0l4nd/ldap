@@ -24,9 +24,10 @@ public class Main {
     //List<String> arr = personRepoImpl.getPersonNamesByLastName();
     //arr.forEach(System.out::println);
     // personRepoImpl.setAttributeValueByUsername("Admin", "description", "addAdminPass");
-    System.out.println(userService.getAttributePersonByUsername("Admin", "mail"));
-    System.out.println(userService.getAttributePersonByUsername("Admin", "telephoneNumber"));
-    System.out.println(userService.getAttributePersonByUsername("Admin", "mail"));
+    //System.out.println(userService.getAttributePersonByUsername("Admin", "mail"));
+    //System.out.println(userService.getAttributePersonByUsername("Admin", "telephoneNumber"));
+    //System.out.println(userService.getAttributePersonByUsername("Admin", "mail"));
+    System.out.println(userService.resetPassword("cn=JayZ,cn=Users,dc=grsu,dc=local", "123"));
     //userService.tmpMethod("Admin");
   }
 

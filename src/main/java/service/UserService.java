@@ -13,6 +13,10 @@ import org.springframework.stereotype.Component;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttribute;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.ModificationItem;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import static org.springframework.ldap.query.LdapQueryBuilder.query;
@@ -69,14 +73,19 @@ public class UserService {
     return attributeUser.toString();
   }
 
-  public void tmpMethod(String username){
-    StringBuilder sb = new StringBuilder();
-    sb.append("cn=").append(username).append(",cn=Users,dc=grsu,dc=local");
-    LdapContextSource contextSource = new LdapContextSource();
-    //contextSource.setPassword("1");
-    contextSource.setUserDn(sb.toString());
-    LdapUserDetailsManager ldapUserDetailsManager = new LdapUserDetailsManager(contextSource);
-    //LdapUserDetailsManager ldapUserDetailsManager1 = new LdapUserDetailsManager(ldapTemplate.getContextSource());
-    ldapUserDetailsManager.changePassword("1","123");
+  public boolean resetPassword(String userDN, String password) {
+    try {
+      ModificationItem repitem = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, new BasicAttribute("unicodepwd", encodePassword(password)));
+      ldapTemplate.modifyAttributes(userDN, new ModificationItem[] { repitem });
+      return true;
+    } catch (Exception e) {
+      System.out.println("changePassword()");
+      return false;
+    }
+  }
+
+  private byte[] encodePassword(String password) throws UnsupportedEncodingException {
+    String newQuotedPassword = "\"" + password + "\"";
+    return newQuotedPassword.getBytes("UTF-16LE");
   }
 }
