@@ -50,7 +50,7 @@ public class UserService {
   }
 
   public boolean setAttributeValueByUsername(String username, String attribute, String valueAttribute) {
-    try{
+    try {
       StringBuilder sb = new StringBuilder();
       sb.append("cn=").append(username).append(",cn=Users,dc=grsu,dc=local");
       DirContextOperations context = ldapTemplate.lookupContext(sb.toString());
@@ -58,7 +58,7 @@ public class UserService {
       context.setAttributeValue(attribute, valueAttribute);
       ldapTemplate.modifyAttributes(context);
       return true;
-    }catch (Exception ex){
+    } catch (Exception ex) {
       return false;
     }
 
@@ -73,10 +73,25 @@ public class UserService {
     return attributeUser.toString();
   }
 
-  public boolean resetPassword(String userDN, String password) {
+  public boolean checkUsernameAndPassword(String username, String password) {
     try {
+      StringBuilder sb = new StringBuilder();
+      sb.append("cn=").append(username).append(",cn=Users,dc=grsu,dc=local");
+      DirContextOperations context = ldapTemplate.lookupContext(sb.toString());
+      if (context.getStringAttribute("unicodepwd").equals(password))
+        return true;
+      else return false;
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
+  public boolean resetPassword(String username, String password) {
+    try {
+      StringBuilder userDN = new StringBuilder();
+      userDN.append("cn=").append(username).append(",cn=Users,dc=grsu,dc=local");
       ModificationItem repitem = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, new BasicAttribute("unicodepwd", encodePassword(password)));
-      ldapTemplate.modifyAttributes(userDN, new ModificationItem[] { repitem });
+      ldapTemplate.modifyAttributes(userDN.toString(), new ModificationItem[]{repitem});
       return true;
     } catch (Exception e) {
       System.out.println("changePassword()");

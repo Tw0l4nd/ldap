@@ -31,6 +31,14 @@ public class UserController {
     else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
   }
 
+  @RequestMapping(value = "/checkUserByUsernameAndPassword/{username}/{password")
+  public ResponseEntity<?> checkUserByUsernameAndPassword(@PathVariable(value = "username") String username,
+                                                          @PathVariable(value = "password") String password) {
+    if (userService.checkUsernameAndPassword(username, password))
+      return new ResponseEntity<>(HttpStatus.OK);
+    else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+  }
+
   @RequestMapping(value = "/resetUserPassword/{username}/{password")
   public ResponseEntity<?> resetUserPassword(@PathVariable(value = "username") String username,
                                              @PathVariable(value = "password") String password) {
