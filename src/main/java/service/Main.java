@@ -1,11 +1,14 @@
-import entity.User;
+package service;
+
+import application.PersonRepoImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
-import service.UserService;
 
 @Component
+@ComponentScan(basePackageClasses = PersonRepoImpl.class)
 public class Main {
 
   @Autowired
@@ -26,8 +29,8 @@ public class Main {
     // personRepoImpl.setAttributeValueByUsername("Admin", "description", "addAdminPass");
     //System.out.println(userService.getAttributePersonByUsername("Admin", "mail"));
     //System.out.println(userService.getAttributePersonByUsername("Admin", "telephoneNumber"));
-    //System.out.println(userService.getAttributePersonByUsername("Admin", "mail"));
-    System.out.println(userService.resetPassword("cn=JayZ,cn=Users,dc=grsu,dc=local", "123"));
+    System.out.println(userService.getAttributePersonByUsername("Admin", "mail"));
+    //System.out.println(userService.resetPassword("cn=JayZ,cn=Users,dc=grsu,dc=local", "123"));
     //userService.tmpMethod("Admin");
   }
 
@@ -37,5 +40,9 @@ public class Main {
 
   public void setUserService(UserService userService) {
     this.userService = userService;
+  }
+
+  public UserService getUserService() {
+    return userService;
   }
 }

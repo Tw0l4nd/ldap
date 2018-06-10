@@ -1,10 +1,11 @@
+package application;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.ldap.core.*;
-import org.springframework.ldap.core.support.LdapContextSource;
+import org.springframework.ldap.core.AttributesMapper;
+import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.query.LdapQuery;
 import org.springframework.stereotype.Component;
-import org.springframework.security.ldap.userdetails.LdapUserDetailsManager;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;

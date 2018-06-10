@@ -5,32 +5,33 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/ldap http://www.springframework.org/schema/ldap/spring-ldap.xsd">
 
-    <bean id="defaultTlsDirContextAuthenticationStrategy"
-          class="org.springframework.ldap.core.support.DefaultTlsDirContextAuthenticationStrategy"/>
+  <bean id="defaultTlsDirContextAuthenticationStrategy"
+        class="org.springframework.ldap.core.support.DefaultTlsDirContextAuthenticationStrategy"/>
 
-    <ldap:context-source
-            username="CN=App App,CN=Users,DC=GRSU,DC=local"
-            password="1"
-            url="ldap://ad-grsu.grsu.local:389"
-            authentication-strategy-ref="defaultTlsDirContextAuthenticationStrategy"/>
+  <ldap:context-source
+    username="CN=App App,CN=Users,DC=GRSU,DC=local"
+    password="1"
+    url="ldap://ad-grsu.grsu.local:389"
+    authentication-strategy-ref="defaultTlsDirContextAuthenticationStrategy"/>
 
-    <ldap:ldap-template id="ldapTemplate"/>
+  <ldap:ldap-template id="ldapTemplate"/>
 
-    <bean id="personRepo" class="PersonRepoImpl">
-        <property name="ldapTemplate" ref="ldapTemplate"/>
-    </bean>
+  <bean id="personRepo" class="application.PersonRepoImpl">
+    <property name="ldapTemplate" ref="ldapTemplate"/>
+  </bean>
 
-    <bean id="userService" class="service.UserService">
-      <property name="ldapTemplate" ref="ldapTemplate"/>
-    </bean>
+  <bean id="userService" class="service.UserService">
+    <property name="ldapTemplate" ref="ldapTemplate"/>
+  </bean>
 
-    <bean id="main" class="Main">
-        <property name="personRepoImpl" ref="personRepo"/>
-        <property name="userService" ref="userService"/>
-    </bean>
+  <bean id="main" class="service.Main">
+    <property name="personRepoImpl" ref="personRepo"/>
+    <property name="userService" ref="userService"/>
+  </bean>
 
   <bean id="userController" class="controllers.UserController">
     <property name="userService" ref="userService"/>
+    <property name="personRepoImpl" ref="personRepo"/>
   </bean>
 
 </beans>
