@@ -1,1 +1,1 @@
-web: java -jar target/SetPass.jar
+web: java -jar target/SetPass.jar Application
