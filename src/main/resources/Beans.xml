@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:ldap="http://www.springframework.org/schema/ldap"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/ldap http://www.springframework.org/schema/ldap/spring-ldap.xsd">
+
+  <!--<context:component-scan base-package="service" />-->
 
   <bean id="defaultTlsDirContextAuthenticationStrategy"
         class="org.springframework.ldap.core.support.DefaultTlsDirContextAuthenticationStrategy"/>
@@ -31,7 +34,6 @@
 
   <bean id="userController" class="controllers.UserController">
     <property name="userService" ref="userService"/>
-    <property name="personRepoImpl" ref="personRepo"/>
   </bean>
 
 </beans>
